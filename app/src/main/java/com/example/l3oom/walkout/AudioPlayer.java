@@ -24,7 +24,10 @@ public class AudioPlayer extends Activity implements OnPreparedListener, MediaCo
 
     private Handler handler = new Handler();
 
-    public AudioPlayer() {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.audio_player);
+
         audioFile = this.getIntent().getStringExtra(AUDIO_FILE_NAME);
         ((TextView)findViewById(R.id.now_playing_text)).setText(audioFile);
 
@@ -40,6 +43,7 @@ public class AudioPlayer extends Activity implements OnPreparedListener, MediaCo
         } catch (IOException e) {
             Log.e(TAG, "Could not open file " + audioFile + " for playback.", e);
         }
+
     }
 
     @Override

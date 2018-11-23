@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WalkOut</string>
+    <string name="walking">Walking</string>
+    <string name="record">Record</string>
 </resources>
