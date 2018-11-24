@@ -42,6 +42,7 @@ public class AudioPlayer extends Activity implements OnPreparedListener, MediaCo
             mediaPlayer.start();
         } catch (IOException e) {
             Log.e(TAG, "Could not open file " + audioFile + " for playback.", e);
+
         }
 
     }
