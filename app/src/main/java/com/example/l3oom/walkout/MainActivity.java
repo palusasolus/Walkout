@@ -1,6 +1,9 @@
 package com.example.l3oom.walkout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -9,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -17,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final AudioManager mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(this, R.color.bgBottomNavigation));
@@ -39,32 +46,72 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        long eventtime = SystemClock.uptimeMillis();
 
-        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-        KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
-        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-        sendOrderedBroadcast(downIntent, null);
+
 
 
         ImageButton playBtn = (ImageButton) findViewById(R.id.playBtn);
+        playBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAudioManager.isMusicActive()) {
 
-        Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-        KeyEvent upEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
-        upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
-        sendOrderedBroadcast(upIntent, null);
+                    Intent i = new Intent("com.android.music.musicservicecommand");
 
-        /*NEXT*/
-        Intent downIntent1 = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-        KeyEvent downEvent1 = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN,   KeyEvent.KEYCODE_MEDIA_NEXT, 0);
-        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent1);
-        sendOrderedBroadcast(downIntent1, null);
+                    i.putExtra("command", "pause");
+                    sendBroadcast(i);
+                }
+                else{
+                    Intent i = new Intent("com.android.music.musicservicecommand");
+                    i.putExtra("command", "play");
+                    sendBroadcast(i);
+                }
+            }
+        });
 
-        /*PREVIOUS*/
-        Intent downIntent2 = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-        KeyEvent downEvent2 = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
-        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent2);
-        sendOrderedBroadcast(downIntent2, null);
+        ImageButton nextBtn = (ImageButton) findViewById(R.id.nextBtn);
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent("com.android.music.musicservicecommand");
+                i.putExtra("command", "next");
+                sendBroadcast(i);
+            }
+        });
+
+        ImageButton previousBtn = (ImageButton) findViewById(R.id.previousBtn);
+        previousBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent("com.android.music.musicservicecommand");
+                i.putExtra("command", "previous");
+                sendBroadcast(i);
+            }
+        });
+
+
+//        long eventtime = SystemClock.uptimeMillis();
+
+//        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+//        KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
+//        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+//        sendOrderedBroadcast(downIntent, null);
+//        Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+//        KeyEvent upEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
+//        upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
+//        sendOrderedBroadcast(upIntent, null);
+//
+//        /*NEXT*/
+//        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+//        KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN,   KeyEvent.KEYCODE_MEDIA_NEXT, 0);
+//        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+//        sendOrderedBroadcast(downIntent, null);
+//
+//        /*PREVIOUS*/
+//        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+//        KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
+//        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+//        sendOrderedBroadcast(downIntent, null);
     }
 
 
