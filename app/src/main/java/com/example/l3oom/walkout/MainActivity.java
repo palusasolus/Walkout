@@ -52,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
                         // do this event
                         return true;
                     case R.id.group_item2:
-                        // do this event
+                        Intent intent = new Intent(MainActivity.this,
+                                MainActivity2.class);
+                        startActivity(intent);
                         return true;
                 }
                 return false;
