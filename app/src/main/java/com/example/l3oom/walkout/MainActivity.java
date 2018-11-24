@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         bottomNavigationView.setSelectedItemId(R.id.group_item1);
 
         final ImageButton playBtn = (ImageButton) findViewById(R.id.playBtn);
@@ -70,12 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
                     i.putExtra("command", "pause");
                     sendBroadcast(i);
+                    playBtn.setImageResource(android.R.drawable.ic_media_play);
                 }
                 else{
                     Intent i = new Intent("com.android.music.musicservicecommand");
                     i.putExtra("command", "play");
                     sendBroadcast(i);
-//                    playBtn.setImageResource(R.drawable.ic);
+                    playBtn.setImageResource(android.R.drawable.ic_media_pause);
                 }
             }
         });
@@ -100,8 +102,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        IntentFilter iF = new IntentFilter();
+        iF.addAction("com.android.music.metachanged");
+        iF.addAction("com.android.music.playstatechanged");
+        iF.addAction("com.android.music.playbackcomplete");
+        iF.addAction("com.android.music.queuechanged");
 
-//        long eventtime = SystemClock.uptimeMillis();
+        registerReceiver(mReceiver, iF);
+
+        //        long eventtime = SystemClock.uptimeMillis();
 
 //        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
 //        KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
@@ -124,14 +133,6 @@ public class MainActivity extends AppCompatActivity {
 //        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
 //        sendOrderedBroadcast(downIntent, null);
 
-        IntentFilter iF = new IntentFilter();
-        iF.addAction("com.android.music.metachanged");
-        iF.addAction("com.android.music.playstatechanged");
-        iF.addAction("com.android.music.playbackcomplete");
-        iF.addAction("com.android.music.queuechanged");
-
-        registerReceiver(mReceiver, iF);
-
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             String album = intent.getStringExtra("album");
             String track = intent.getStringExtra("track");
             Log.d("Music",artist+":"+album+":"+track);
-            nowPlayingTxt.setText(track + " "+album +" "+artist);
+            nowPlayingTxt.setText(track + ": "+album +": "+artist);
 
         }
     };

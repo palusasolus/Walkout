@@ -10,14 +10,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="25dp"
-            android:text="TextView" />
+            android:minWidth="206dp"
+            android:minHeight="206dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,9 +50,10 @@
 
             <LinearLayout
                 android:id="@+id/main_audio_view"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
@@ -58,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Now playing:"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -67,38 +70,42 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dip"
-                    android:layout_marginTop="20dip"
+                    android:layout_marginTop="10dip"
                     android:layout_marginRight="10dip"
                     android:text="Now playing.."
+                    android:textColor="@color/colorAccent"
                     android:textSize="16sp"
                     android:textStyle="italic" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <ImageButton
                         android:id="@+id/previousBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:theme="@style/PrimaryButton"
                         app:srcCompat="@android:drawable/ic_media_previous" />
 
                     <ImageButton
                         android:id="@+id/playBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:theme="@style/PrimaryButton"
-                        app:srcCompat="@android:drawable/ic_media_play"
-                        />
+                        app:srcCompat="@android:drawable/ic_media_play" />
 
                     <ImageButton
                         android:id="@+id/nextBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:theme="@style/PrimaryButton"
                         app:srcCompat="@android:drawable/ic_media_next" />
@@ -112,28 +119,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteY="179dp">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/WalkBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/walkBtn"
+                android:layout_alignParentBottom="true"
                 android:theme="@style/PrimaryButton" />
-
-
         </LinearLayout>
-
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.l3oom.walkout.MainActivity"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="95dp">
+        tools:context="com.example.l3oom.walkout.MainActivity">
 
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/bottom_nav_view"
