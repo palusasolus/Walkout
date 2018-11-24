@@ -74,8 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     i.putExtra("command", "pause");
                     sendBroadcast(i);
                     playBtn.setImageResource(android.R.drawable.ic_media_play);
-                }
-                else{
+                } else {
                     Intent i = new Intent("com.android.music.musicservicecommand");
                     i.putExtra("command", "play");
                     sendBroadcast(i);
@@ -141,8 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
         @SuppressLint("LongLogTag")
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             TextView nowPlayingTxt = (TextView) findViewById(R.id.now_playing_text);
             String action = intent.getAction();
             String cmd = intent.getStringExtra("command");
@@ -150,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
             String artist = intent.getStringExtra("artist");
             String album = intent.getStringExtra("album");
             String track = intent.getStringExtra("track");
-            Log.d("Music",artist+":"+album+":"+track);
-            nowPlayingTxt.setText(track + ": "+album +": "+artist);
+            Log.d("Music", artist + ":" + album + ":" + track);
+            nowPlayingTxt.setText(track + ": " + album + ": " + artist);
 
         }
     };
