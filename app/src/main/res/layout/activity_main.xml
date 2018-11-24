@@ -92,7 +92,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:theme="@style/PrimaryButton"
-                        app:srcCompat="@android:drawable/ic_media_play" />
+                        app:srcCompat="@android:drawable/ic_media_play"
+                        />
 
                     <ImageButton
                         android:id="@+id/nextBtn"
