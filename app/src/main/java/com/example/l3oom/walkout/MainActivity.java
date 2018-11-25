@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.concurrent.TimeUnit;
@@ -65,8 +66,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        runTimer();
 
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setIndeterminate(true);
         final AudioManager mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
 
@@ -95,12 +97,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mAudioManager.isMusicActive()) {
 
-                    Intent i = new Intent("com.android.music.musicservicecommand");
+                    long eventtime = SystemClock.uptimeMillis();
 
+                    Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+                    KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
+                    downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+                    sendOrderedBroadcast(downIntent, null);
+
+                    Intent i = new Intent("com.android.music.musicservicecommand");
                     i.putExtra("command", "pause");
                     sendBroadcast(i);
                     playBtn.setImageResource(android.R.drawable.ic_media_play);
                 } else {
+                    long eventtime = SystemClock.uptimeMillis();
+
+                    Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+                    KeyEvent upEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
+                    upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
+                    sendOrderedBroadcast(upIntent, null);
+
                     Intent i = new Intent("com.android.music.musicservicecommand");
                     i.putExtra("command", "play");
                     sendBroadcast(i);
@@ -113,19 +128,41 @@ public class MainActivity extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent("com.android.music.musicservicecommand");
-                i.putExtra("command", "next");
-                sendBroadcast(i);
+                long eventtime = SystemClock.uptimeMillis();
+                Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+                KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN,   KeyEvent.KEYCODE_MEDIA_NEXT, 0);
+                downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+                sendOrderedBroadcast(downIntent, null);
+//
+//                Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+//                KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN,   KeyEvent.KEYCODE_MEDIA_NEXT, 0);
+//                downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+//                sendOrderedBroadcast(downIntent, null);
+//                Intent i = new Intent("com.android.music.musicservicecommand");
+//                i.putExtra("command", "next");
+//                sendBroadcast(i);
             }
         });
 
-        ImageButton previousBtn = (ImageButton) findViewById(R.id.previousBtn);
+        final ImageButton previousBtn = (ImageButton) findViewById(R.id.previousBtn);
         previousBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent("com.android.music.musicservicecommand");
-                i.putExtra("command", "previous");
-                sendBroadcast(i);
+
+                long eventtime = SystemClock.uptimeMillis();
+                Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+                KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
+                downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+                sendOrderedBroadcast(downIntent, null);
+//
+//                Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+//                KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
+//                downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+//                sendOrderedBroadcast(downIntent, null);
+
+//                Intent i = new Intent("com.android.music.musicservicecommand");
+//                i.putExtra("command", "previous");
+//                sendBroadcast(i);
             }
         });
 
@@ -137,28 +174,9 @@ public class MainActivity extends AppCompatActivity {
 
         registerReceiver(mReceiver, iF);
 
-        //        long eventtime = SystemClock.uptimeMillis();
 
-//        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-//        KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
-//        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-//        sendOrderedBroadcast(downIntent, null);
-//        Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-//        KeyEvent upEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
-//        upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
-//        sendOrderedBroadcast(upIntent, null);
-//
-//        /*NEXT*/
-//        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-//        KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN,   KeyEvent.KEYCODE_MEDIA_NEXT, 0);
-//        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-//        sendOrderedBroadcast(downIntent, null);
-//
-//        /*PREVIOUS*/
-//        Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-//        KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
-//        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-//        sendOrderedBroadcast(downIntent, null);
+
+
 
 
         final Button walkBtn = (Button) findViewById(R.id.WalkBtn);
@@ -167,6 +185,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (String.valueOf(walkBtn.getText())) {
                     case "Start Walking":
+                        final ProgressBar progressBar1 = (ProgressBar)findViewById(R.id.progressBar);
+                        progressBar1.setVisibility(View.VISIBLE);
                         walkBtn.setText("Stop Walking");
                         startTime = SystemClock.uptimeMillis();
                         handlerTime.postDelayed(runnableTime, 0);

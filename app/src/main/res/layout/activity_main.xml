@@ -25,20 +25,20 @@
 
                 <ProgressBar
                     android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:indeterminate="false"
                     android:minHeight="@dimen/activity1_minHeight"
-                    android:minWidth="@dimen/activity1_minWidth" />
+                    android:minWidth="@dimen/activity1_minWidth"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="@string/startTime"/>
+                    android:text="@string/startTime" />
             </RelativeLayout>
 
             <LinearLayout
