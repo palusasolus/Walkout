@@ -7,4 +7,5 @@
     <string name="distance">Distance: </string>
     <string name="walkBtn">Start Walking</string>
     <string name="logo">logo</string>
+    <string name="startTime">00:00:000</string>
 </resources>

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.media.Image;
 import android.os.Bundle;
@@ -23,6 +25,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -35,8 +39,25 @@ public class MainActivity extends AppCompatActivity {
     public static final String CMDNEXT = "next";
 
 
-    public int millseconds = 0;
-    public boolean running = false;
+    public Long millSeconds = 0L, startTime = 0L, updateTime = 0L, timeSwap = 0L;
+    Handler handlerTime = new Handler();
+    Runnable runnableTime = new Runnable() {
+        @Override
+        public void run() {
+            millSeconds = SystemClock.uptimeMillis() - startTime;
+            updateTime = millSeconds + timeSwap;
+            int secs = (int) (updateTime / 1000);
+            int mins = secs / 60;
+            secs %= 60;
+            int milli = (int) (updateTime % 1000);
+            final TextView time = (TextView) findViewById(R.id.time);
+            time.setText("" + String.format("%02d", mins) + ":" + String.format("%02d", secs) + ":" + String.format("%03d", milli));
+            handlerTime.postDelayed(this, 0);
+        }
+    };
+
+    SQLiteDatabase mDb;
+    MyDbHelper mHelper;
 
 
     @SuppressLint("NewApi")
@@ -44,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        runTimer();
+//        runTimer();
 
         final AudioManager mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
@@ -140,52 +161,37 @@ public class MainActivity extends AppCompatActivity {
 //        sendOrderedBroadcast(downIntent, null);
 
 
-        final Button walkBtn = (Button)findViewById(R.id.WalkBtn);
+        final Button walkBtn = (Button) findViewById(R.id.WalkBtn);
         walkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (String.valueOf(walkBtn.getText())){
-                    case "Start Walking" :
+                switch (String.valueOf(walkBtn.getText())) {
+                    case "Start Walking":
                         walkBtn.setText("Stop Walking");
-                        running = true;
+                        startTime = SystemClock.uptimeMillis();
+                        handlerTime.postDelayed(runnableTime, 0);
                         break;
                     case "Stop Walking":
-                        final TextView time =(TextView)findViewById(R.id.time);
 
-                        Log.i("Stop",""+time.getText());
+//                        Log.i("Stop",""+time.getText());
 
                         // insert Db
                         // change to records
-                        running = false;
+                        handlerTime.removeCallbacks(runnableTime);
+                        final TextView time = (TextView) findViewById(R.id.time);
+                        String timeDuration = String.valueOf(time.getText());
+                        mHelper = new MyDbHelper(MainActivity.this);
+                        mDb = mHelper.getWritableDatabase();
+                        mDb.execSQL("INSERT INTO " + MyDbHelper.TABLE_NAME + " (" + MyDbHelper.COL_STEP_COUNT + ", " + MyDbHelper.COL_DURATION
+                                + ", " + MyDbHelper.COL_DISTANCE + ") VALUES ('20', '" + timeDuration + "' , '3');");
                         Intent intent = new Intent(MainActivity.this,
                                 MainActivity2.class);
-                        intent.putExtra("pass", time.getText());
+                        intent.putExtra("pass", timeDuration);
                         startActivity(intent);
                         break;
                 }
             }
         });
-    }
-
-    public void runTimer(){
-
-
-        final Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                int  minutes= (millseconds / (1000 * 60 )%24 );
-                int seconds = (millseconds / (100 )%60 );
-                int milli = (millseconds %100);
-                String time = String.format("%02d:%02d:%02d",minutes,seconds,milli);
-                final TextView duration =(TextView)findViewById(R.id.time);
-
-                duration.setText(time);
-                if(running) millseconds++;
-                handler.postDelayed(this,1);
-            }
-        });
-
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
