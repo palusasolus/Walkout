@@ -93,14 +93,14 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/duration"
+                        android:id="@+id/kcal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/activity1_padding"
-                        android:text="@string/duration" />
+                        android:text="@string/kcal" />
 
                     <TextView
-                        android:id="@+id/duration_value"
+                        android:id="@+id/kcal_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>

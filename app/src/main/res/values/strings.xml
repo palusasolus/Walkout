@@ -3,7 +3,7 @@
     <string name="walking">Walking</string>
     <string name="record">Record</string>
     <string name="stepCounted">Step Counted: </string>
-    <string name="duration">Duration: </string>
+    <string name="kcal">Kcal Burned: </string>
     <string name="distance">Distance: </string>
     <string name="walkBtn">Start Walking</string>
     <string name="logo">logo</string>

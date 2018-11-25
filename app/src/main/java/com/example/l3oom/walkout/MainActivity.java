@@ -8,6 +8,10 @@ import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.Image;
 import android.os.Bundle;
@@ -26,9 +30,27 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener, StepListener {
+
+    //StepDetector
+    private StepDetector simpleStepDetector;
+    private SensorManager sensorManager;
+    private Sensor accel;
+    private int numSteps,distance;
+    private double kcal;
+    private TextView stepCounted_value;
+    private TextView distance_value;
+    private TextView kcal_value;
+    private static double METRIC_WALKING_FACTOR = 0.708;
+    private static int STEP_LENGTH = 20;
+    private static double AVERAGE_WEIGHT = 60;
+    private double kilo,meters;
+
+
 
 
     public static final String SERVICECMD = "com.android.music.musicservicecommand";
@@ -61,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
     MyDbHelper mHelper;
 
 
-    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +91,16 @@ public class MainActivity extends AppCompatActivity {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setIndeterminate(true);
         mAudioManager = (AudioManager) this.getSystemService(AUDIO_SERVICE);
+
+
+    //Step Detector
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        simpleStepDetector = new StepDetector();
+        simpleStepDetector.registerListener(this);
+        stepCounted_value = (TextView) findViewById(R.id.stepCounted_value);
+        distance_value = (TextView) findViewById(R.id.distance_value);
+        kcal_value = (TextView) findViewById(R.id.kcal_value);
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
@@ -197,6 +228,11 @@ public class MainActivity extends AppCompatActivity {
                         walkBtn.setText("Stop Walking");
                         startTime = SystemClock.uptimeMillis();
                         handlerTime.postDelayed(runnableTime, 0);
+                        numSteps = 0;
+                        kcal = 0;
+                        kilo=0l;
+                        meters=0;
+                        sensorManager.registerListener(MainActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
                         break;
                     case "Stop Walking":
 
@@ -215,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
                                 MainActivity2.class);
                         intent.putExtra("pass", timeDuration);
                         startActivity(intent);
+                        sensorManager.unregisterListener(MainActivity.this);
                         break;
                 }
             }
@@ -244,6 +281,41 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            simpleStepDetector.updateAccel(event.timestamp, event.values[0], event.values[1], event.values[2]);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    public void step(long timeNs) {
+        numSteps++;
+        stepCounted_value.setText(numSteps + "");
+    }
+
+    @Override
+    public void calDistance(){
+        meters = ((numSteps * STEP_LENGTH)%10000)*0.00001;
+        kilo = (numSteps * STEP_LENGTH)/10000;
+        kilo+= (meters);
+
+        distance_value.setText(String.format("%.3f",kilo));
+    }
+    @Override
+    public void calKcal(){
+        //     (mBodyWeight * (mIsRunning ? METRIC_RUNNING_FACTOR : METRIC_WALKING_FACTOR))
+//            // Distance:
+//            * mStepLength // centimeters
+//                / 100000.0; // centimeters/kilometera
+        kcal = ((AVERAGE_WEIGHT * METRIC_WALKING_FACTOR) * STEP_LENGTH /100000.0) * numSteps;
+        kcal_value.setText(String.format("%.3f",kcal));
+    }
 }
 
 
