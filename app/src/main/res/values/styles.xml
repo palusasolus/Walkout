@@ -2,6 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -13,9 +14,9 @@
     </style>
 
     <style name="now_playing" parent="AppTheme">
-        <item name="android:layout_width">60dp</item>
-        <item name="android:layout_height">60dp</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:layout_width">60sp</item>
+        <item name="android:layout_height">60sp</item>
+        <item name="android:layout_margin">10sp</item>
         <item name="android:layout_weight">1</item>
     </style>
 
@@ -26,8 +27,8 @@
     </style>
 
     <style name="progressBar" parent="AppTheme">
-        <item name="android:minHeight">206dp</item>
-        <item name="android:minWidth">206dp</item>
+        <item name="android:minHeight">206sp</item>
+        <item name="android:minWidth">206sp</item>
     </style>
 
 </resources>

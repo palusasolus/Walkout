@@ -5,9 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
 import android.media.AudioManager;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -33,17 +35,21 @@ public class MainActivity extends AppCompatActivity {
     public static final String CMDNEXT = "next";
 
 
+    public int millseconds = 0;
+    public boolean running = false;
+
+
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        runTimer();
 
         final AudioManager mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
-        bottomNavigationView.setItemTextColor(ContextCompat.getColorStateList(this, R.color.bgBottomNavigation));
-        bottomNavigationView.setItemIconTintList(ContextCompat.getColorStateList(this, R.color.bgBottomNavigation));
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -60,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
         bottomNavigationView.setSelectedItemId(R.id.group_item1);
 
         final ImageButton playBtn = (ImageButton) findViewById(R.id.playBtn);
@@ -134,6 +139,53 @@ public class MainActivity extends AppCompatActivity {
 //        downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
 //        sendOrderedBroadcast(downIntent, null);
 
+
+        final Button walkBtn = (Button)findViewById(R.id.WalkBtn);
+        walkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (String.valueOf(walkBtn.getText())){
+                    case "Start Walking" :
+                        walkBtn.setText("Stop Walking");
+                        running = true;
+                        break;
+                    case "Stop Walking":
+                        final TextView time =(TextView)findViewById(R.id.time);
+
+                        Log.i("Stop",""+time.getText());
+
+                        // insert Db
+                        // change to records
+                        running = false;
+                        Intent intent = new Intent(MainActivity.this,
+                                MainActivity2.class);
+                        intent.putExtra("pass", time.getText());
+                        startActivity(intent);
+                        break;
+                }
+            }
+        });
+    }
+
+    public void runTimer(){
+
+
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int  minutes= (millseconds / (1000 * 60 )%24 );
+                int seconds = (millseconds / (100 )%60 );
+                int milli = (millseconds %100);
+                String time = String.format("%02d:%02d:%02d",minutes,seconds,milli);
+                final TextView duration =(TextView)findViewById(R.id.time);
+
+                duration.setText(time);
+                if(running) millseconds++;
+                handler.postDelayed(this,1);
+            }
+        });
+
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -154,6 +206,11 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterReceiver(mReceiver);
+    }
 
 }
 
