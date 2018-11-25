@@ -33,15 +33,19 @@ public class MainActivity2 extends AppCompatActivity {
 
     public double steps = 0;
     public double distance = 0;
+    public double cal = 0;
+    public double min = 0;
+    public double sec = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        if(getIntent().getStringExtra("pass")!=null){
+        if (getIntent().getStringExtra("time") != null && getIntent().getStringExtra("cal") != null
+                && getIntent().getStringExtra("distance") != null && getIntent().getStringExtra("stepCount") != null) {
             final AlertDialog.Builder viewDialog = new AlertDialog.Builder(this);
-            viewDialog.setMessage(getIntent().getStringExtra("pass"));
+            viewDialog.setMessage("Step : " + getIntent().getStringExtra("stepCount") + "\nTime : " + getIntent().getStringExtra("time") + "\n" + "Calories : " + getIntent().getStringExtra("cal") + "\nDistance : " + getIntent().getStringExtra("distance"));
             viewDialog.show();
         }
 
@@ -68,33 +72,39 @@ public class MainActivity2 extends AppCompatActivity {
 
         mHelper = new MyDbHelper(this);
         mDb = mHelper.getWritableDatabase();
-        mCursor = mDb.rawQuery("SELECT " + MyDbHelper.COL_STEP_COUNT + ", "  + MyDbHelper.COL_DISTANCE
-                + ", " + MyDbHelper.COL_DURATION + " FROM " + MyDbHelper.TABLE_NAME, null);
+        mCursor = mDb.rawQuery("SELECT " + MyDbHelper.COL_STEP_COUNT + ", " + MyDbHelper.COL_DISTANCE
+                + ", " + MyDbHelper.COL_CALORIES + ", " + MyDbHelper.COL_TIME + " FROM " + MyDbHelper.TABLE_NAME, null);
 
         final ArrayList<String> dirArray = new ArrayList<String>();
         mCursor.moveToFirst();
 
-        while ( !mCursor.isAfterLast() ){
+        while (!mCursor.isAfterLast()) {
             steps += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)));
             distance += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)));
-//            SimpleDateFormat format = new SimpleDateFormat("mm:ss:SSS");
-//            try {
-//                Date date = format.parse(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DURATION)));
-//                Log.i("date"," "+date.getMinutes()+" "+date.getSeconds());
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-            dirArray.add("step : "+mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)) + "\t\t"
-                    + "distance : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)) + "\t\t"
-                    + "duration : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DURATION)));
+            cal += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)));
+            SimpleDateFormat format = new SimpleDateFormat("mm:ss:SSS");
+            try {
+                Date date = format.parse(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_TIME)));
+                min += date.getMinutes();
+                sec += date.getSeconds();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            dirArray.add("step : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)) + "\t\t"
+                    + "distance : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)) + " km\t\t\n"
+                    + "calories : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)) + "\t\t\n"
+                    + "time : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_TIME)));
             mCursor.moveToNext();
         }
+        double secToMin = sec / 60;
+        min += secToMin;
+        sec -= (secToMin * 60);
 
         ArrayAdapter<String> adapterDir = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dirArray);
         listView.setAdapter(adapterDir);
 
-        TextView textView = (TextView)findViewById(R.id.total);
-        textView.setText("Total Steps : "+ steps +"\t Total Distance : "+distance);
+        TextView textView = (TextView) findViewById(R.id.total);
+        textView.setText("Total Steps : " + steps + "\t Total Distance : " + distance + " km\n" + "Total calories : " + cal);
 
         final AlertDialog.Builder viewDetail = new AlertDialog.Builder(this);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

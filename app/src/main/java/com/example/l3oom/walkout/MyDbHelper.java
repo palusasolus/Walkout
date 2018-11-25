@@ -11,7 +11,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "Records";
     public static final String COL_STEP_COUNT = "step_count";
     public static final String COL_DISTANCE = "distance";
-    public static final String COL_DURATION = "duration";
+    public static final String COL_CALORIES = "calories";
+    public static final String COL_TIME = "time";
 
     public MyDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -21,7 +22,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME +" (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COL_STEP_COUNT + " TEXT, " + COL_DISTANCE + " TEXT, "
-                + COL_DURATION + " TEXT);");
+                + COL_CALORIES + " TEXT ," + COL_TIME + " TEXT );");
     }
 
     @Override

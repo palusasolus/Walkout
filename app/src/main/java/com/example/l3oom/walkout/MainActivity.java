@@ -5,24 +5,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.ColorStateList;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,17 +25,13 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.util.concurrent.TimeUnit;
-
 public class MainActivity extends AppCompatActivity implements SensorEventListener, StepListener {
 
     //StepDetector
     private StepDetector simpleStepDetector;
     private SensorManager sensorManager;
     private Sensor accel;
-    private int numSteps,distance;
+    private int numSteps;
     private double kcal;
     private TextView stepCounted_value;
     private TextView distance_value;
@@ -48,18 +39,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static double METRIC_WALKING_FACTOR = 0.708;
     private static int STEP_LENGTH = 20;
     private static double AVERAGE_WEIGHT = 60;
-    private double kilo,meters;
+    private double kilo, meters;
 
-
-
-
-    public static final String SERVICECMD = "com.android.music.musicservicecommand";
-    public static final String CMDNAME = "command";
-    public static final String CMDTOGGLEPAUSE = "togglepause";
-    public static final String CMDSTOP = "stop";
-    public static final String CMDPAUSE = "pause";
-    public static final String CMDPREVIOUS = "previous";
-    public static final String CMDNEXT = "next";
     AudioManager mAudioManager;
 
     public Long millSeconds = 0L, startTime = 0L, updateTime = 0L, timeSwap = 0L;
@@ -93,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mAudioManager = (AudioManager) this.getSystemService(AUDIO_SERVICE);
 
 
-    //Step Detector
+        //Step Detector
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         simpleStepDetector = new StepDetector();
@@ -128,30 +109,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View v) {
 
                 if (mAudioManager.isMusicActive()) {
-
-                    long eventtime = SystemClock.uptimeMillis();
-
-                    Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-                    KeyEvent upEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
-                    upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
-                    sendOrderedBroadcast(upIntent, null);
-
-
-//                    Intent i = new Intent("com.android.music.musicservicecommand");
-//                    i.putExtra("command", "pause");
-//                    sendBroadcast(i);
+                    Intent i = new Intent("com.android.music.musicservicecommand");
+                    i.putExtra("command", "pause");
+                    sendBroadcast(i);
                     playBtn.setImageResource(android.R.drawable.ic_media_play);
                 } else {
-                    long eventtime = SystemClock.uptimeMillis();
 
-                    Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-                    KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
-                    downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-                    sendOrderedBroadcast(downIntent, null);
-
-//                    Intent i = new Intent("com.android.music.musicservicecommand");
-//                    i.putExtra("command", "play");
-//                    sendBroadcast(i);
+                    Intent i = new Intent("com.android.music.musicservicecommand");
+                    i.putExtra("command", "play");
+                    sendBroadcast(i);
                     playBtn.setImageResource(android.R.drawable.ic_media_pause);
                 }
             }
@@ -161,22 +127,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAudioManager == null) {
-                    mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-                }
-                long eventtime = SystemClock.uptimeMillis();
-                Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-                KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN,   KeyEvent.KEYCODE_MEDIA_NEXT, 0);
-                downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-                sendOrderedBroadcast(downIntent, null);
-//
-//                Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-//                KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN,   KeyEvent.KEYCODE_MEDIA_NEXT, 0);
-//                downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-//                sendOrderedBroadcast(downIntent, null);
-//                Intent i = new Intent("com.android.music.musicservicecommand");
-//                i.putExtra("command", "next");
-//                sendBroadcast(i);
+                Intent i = new Intent("com.android.music.musicservicecommand");
+                i.putExtra("command", "next");
+                sendBroadcast(i);
             }
         });
 
@@ -184,23 +137,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         previousBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAudioManager == null) {
-                    mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-                }
-                long eventtime = SystemClock.uptimeMillis();
-                Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-                KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
-                downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-                sendOrderedBroadcast(downIntent, null);
-//
-//                Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-//                KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
-//                downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-//                sendOrderedBroadcast(downIntent, null);
-
-//                Intent i = new Intent("com.android.music.musicservicecommand");
-//                i.putExtra("command", "previous");
-//                sendBroadcast(i);
+                Intent i = new Intent("com.android.music.musicservicecommand");
+                i.putExtra("command", "previous");
+                sendBroadcast(i);
             }
         });
 
@@ -213,43 +152,40 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         registerReceiver(mReceiver, iF);
 
 
-
-
-
-
         final Button walkBtn = (Button) findViewById(R.id.WalkBtn);
         walkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (String.valueOf(walkBtn.getText())) {
                     case "Start Walking":
-                        final ProgressBar progressBar1 = (ProgressBar)findViewById(R.id.progressBar);
+                        final ProgressBar progressBar1 = (ProgressBar) findViewById(R.id.progressBar);
                         progressBar1.setVisibility(View.VISIBLE);
                         walkBtn.setText("Stop Walking");
                         startTime = SystemClock.uptimeMillis();
                         handlerTime.postDelayed(runnableTime, 0);
                         numSteps = 0;
                         kcal = 0;
-                        kilo=0l;
-                        meters=0;
+                        kilo = 0l;
+                        meters = 0;
                         sensorManager.registerListener(MainActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
                         break;
                     case "Stop Walking":
-
-//                        Log.i("Stop",""+time.getText());
-
-                        // insert Db
-                        // change to records
                         handlerTime.removeCallbacks(runnableTime);
                         final TextView time = (TextView) findViewById(R.id.time);
                         String timeDuration = String.valueOf(time.getText());
+                        String distance = String.valueOf(distance_value.getText());
+                        String kcal = String.valueOf(kcal_value.getText());
+                        String stepCount = String.valueOf(stepCounted_value.getText());
                         mHelper = new MyDbHelper(MainActivity.this);
                         mDb = mHelper.getWritableDatabase();
-                        mDb.execSQL("INSERT INTO " + MyDbHelper.TABLE_NAME + " (" + MyDbHelper.COL_STEP_COUNT + ", " + MyDbHelper.COL_DURATION
-                                + ", " + MyDbHelper.COL_DISTANCE + ") VALUES ('20', '" + timeDuration + "' , '3');");
+                        mDb.execSQL("INSERT INTO " + MyDbHelper.TABLE_NAME + " (" + MyDbHelper.COL_STEP_COUNT + ", " + MyDbHelper.COL_CALORIES
+                                + ", " + MyDbHelper.COL_DISTANCE + ", " + MyDbHelper.COL_TIME + ") VALUES ('" + stepCount + "', '" + kcal + "' , '" + distance + "','" + timeDuration + "');");
                         Intent intent = new Intent(MainActivity.this,
                                 MainActivity2.class);
-                        intent.putExtra("pass", timeDuration);
+                        intent.putExtra("time", timeDuration);
+                        intent.putExtra("cal", kcal);
+                        intent.putExtra("distance", distance);
+                        intent.putExtra("stepCount", stepCount);
                         startActivity(intent);
                         sensorManager.unregisterListener(MainActivity.this);
                         break;
@@ -279,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        }
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -300,21 +236,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    public void calDistance(){
-        meters = ((numSteps * STEP_LENGTH)%10000)*0.00001;
-        kilo = (numSteps * STEP_LENGTH)/10000;
-        kilo+= (meters);
+    public void calDistance() {
+        meters = ((numSteps * STEP_LENGTH) % 10000) * 0.00001;
+        kilo = (numSteps * STEP_LENGTH) / 10000;
+        kilo += (meters);
 
-        distance_value.setText(String.format("%.3f",kilo));
+        distance_value.setText(String.format("%.3f", kilo));
     }
+
     @Override
-    public void calKcal(){
+    public void calKcal() {
         //     (mBodyWeight * (mIsRunning ? METRIC_RUNNING_FACTOR : METRIC_WALKING_FACTOR))
 //            // Distance:
 //            * mStepLength // centimeters
 //                / 100000.0; // centimeters/kilometera
-        kcal = ((AVERAGE_WEIGHT * METRIC_WALKING_FACTOR) * STEP_LENGTH /100000.0) * numSteps;
-        kcal_value.setText(String.format("%.3f",kcal));
+        kcal = ((AVERAGE_WEIGHT * METRIC_WALKING_FACTOR) * STEP_LENGTH / 100000.0) * numSteps;
+        kcal_value.setText(String.format("%.3f", kcal));
     }
 }
 
