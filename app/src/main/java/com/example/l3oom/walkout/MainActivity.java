@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String CMDPAUSE = "pause";
     public static final String CMDPREVIOUS = "previous";
     public static final String CMDNEXT = "next";
-
+    AudioManager mAudioManager;
 
     public Long millSeconds = 0L, startTime = 0L, updateTime = 0L, timeSwap = 0L;
     Handler handlerTime = new Handler();
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setIndeterminate(true);
-        final AudioManager mAudioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) this.getSystemService(AUDIO_SERVICE);
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
@@ -95,20 +95,9 @@ public class MainActivity extends AppCompatActivity {
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (mAudioManager.isMusicActive()) {
 
-                    long eventtime = SystemClock.uptimeMillis();
-
-                    Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
-                    KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
-                    downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
-                    sendOrderedBroadcast(downIntent, null);
-
-                    Intent i = new Intent("com.android.music.musicservicecommand");
-                    i.putExtra("command", "pause");
-                    sendBroadcast(i);
-                    playBtn.setImageResource(android.R.drawable.ic_media_play);
-                } else {
                     long eventtime = SystemClock.uptimeMillis();
 
                     Intent upIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
@@ -116,9 +105,22 @@ public class MainActivity extends AppCompatActivity {
                     upIntent.putExtra(Intent.EXTRA_KEY_EVENT, upEvent);
                     sendOrderedBroadcast(upIntent, null);
 
-                    Intent i = new Intent("com.android.music.musicservicecommand");
-                    i.putExtra("command", "play");
-                    sendBroadcast(i);
+
+//                    Intent i = new Intent("com.android.music.musicservicecommand");
+//                    i.putExtra("command", "pause");
+//                    sendBroadcast(i);
+                    playBtn.setImageResource(android.R.drawable.ic_media_play);
+                } else {
+                    long eventtime = SystemClock.uptimeMillis();
+
+                    Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
+                    KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, 0);
+                    downIntent.putExtra(Intent.EXTRA_KEY_EVENT, downEvent);
+                    sendOrderedBroadcast(downIntent, null);
+
+//                    Intent i = new Intent("com.android.music.musicservicecommand");
+//                    i.putExtra("command", "play");
+//                    sendBroadcast(i);
                     playBtn.setImageResource(android.R.drawable.ic_media_pause);
                 }
             }
@@ -128,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mAudioManager == null) {
+                    mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
+                }
                 long eventtime = SystemClock.uptimeMillis();
                 Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
                 KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN,   KeyEvent.KEYCODE_MEDIA_NEXT, 0);
@@ -148,7 +153,9 @@ public class MainActivity extends AppCompatActivity {
         previousBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (mAudioManager == null) {
+                    mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
+                }
                 long eventtime = SystemClock.uptimeMillis();
                 Intent downIntent = new Intent(Intent.ACTION_MEDIA_BUTTON, null);
                 KeyEvent downEvent = new KeyEvent(eventtime, eventtime, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PREVIOUS, 0);
@@ -233,10 +240,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        unregisterReceiver(mReceiver);
-    }
+    protected void onPause() {
+        super.onPause();
+        }
 
 }
 
