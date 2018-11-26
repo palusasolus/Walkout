@@ -112,13 +112,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     Intent i = new Intent("com.android.music.musicservicecommand");
                     i.putExtra("command", "pause");
                     sendBroadcast(i);
-                    playBtn.setImageResource(android.R.drawable.ic_media_play);
+                    playBtn.setImageResource(R.drawable.play_icon);
                 } else {
 
                     Intent i = new Intent("com.android.music.musicservicecommand");
                     i.putExtra("command", "play");
                     sendBroadcast(i);
-                    playBtn.setImageResource(android.R.drawable.ic_media_pause);
+                    playBtn.setImageResource(R.drawable.pause_icon);
                 }
             }
         });
