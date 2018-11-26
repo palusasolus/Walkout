@@ -1,23 +1,19 @@
 package com.example.l3oom.walkout;
 
-import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v4.content.ContextCompat;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -96,15 +92,13 @@ public class MainActivity2 extends AppCompatActivity {
                     + "time : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_TIME)));
             mCursor.moveToNext();
         }
-        double secToMin = sec / 60;
-        min += secToMin;
-        sec -= (secToMin * 60);
 
         ArrayAdapter<String> adapterDir = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dirArray);
         listView.setAdapter(adapterDir);
 
         TextView textView = (TextView) findViewById(R.id.total);
-        textView.setText("Total Steps : " + steps + "\t Total Distance : " + distance + " km\n" + "Total calories : " + cal);
+        textView.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_info_details, 0, 0, 0);
+        textView.setText("\t Total Steps : " + steps + " \n\t Total Distance : " + String.format("%.3f",distance) + " km\n\t Total calories : " + String.format("%.3f",cal)+" KCal");
 
         final AlertDialog.Builder viewDetail = new AlertDialog.Builder(this);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -4,8 +4,11 @@
     <string name="record">Record</string>
     <string name="stepCounted">Step Counted: </string>
     <string name="kcal">Kcal Burned: </string>
-    <string name="distance">Distance: </string>
+    <string name="distance">Distance(km): </string>
     <string name="walkBtn">Start Walking</string>
     <string name="logo">logo</string>
     <string name="startTime">00:00:000</string>
+    <string name="intiStep">0</string>
+    <string name="initDistance">0.000</string>
+    <string name="initCal">0.000</string>
 </resources>

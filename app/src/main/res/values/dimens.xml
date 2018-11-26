@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="activity1_padding">10sp</dimen>
+    <dimen name="activity1_margin">25sp</dimen>
     <dimen name="activity1_textsize_16">16sp</dimen>
     <dimen name="activity1_textsize_20">20sp</dimen>
     <dimen name="activity1_minHeight">186sp</dimen>

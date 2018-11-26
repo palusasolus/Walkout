@@ -5,7 +5,9 @@ package com.example.l3oom.walkout;
 public interface StepListener {
 
     public void step(long timeNs);
+
     public void calDistance();
+
     public void calKcal();
 
 }

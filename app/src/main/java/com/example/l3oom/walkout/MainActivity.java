@@ -31,15 +31,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private StepDetector simpleStepDetector;
     private SensorManager sensorManager;
     private Sensor accel;
-    private int numSteps;
-    private double kcal;
+    private int numSteps = 0;
+    private double kcal = 0;
     private TextView stepCounted_value;
     private TextView distance_value;
     private TextView kcal_value;
     private static double METRIC_WALKING_FACTOR = 0.708;
     private static int STEP_LENGTH = 20;
     private static double AVERAGE_WEIGHT = 60;
-    private double kilo, meters;
+    private double kilo = 0, meters = 0;
 
     AudioManager mAudioManager;
 
@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         progressBar.setIndeterminate(true);
         mAudioManager = (AudioManager) this.getSystemService(AUDIO_SERVICE);
 
-
         //Step Detector
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.group_item1:
-                        // do this event
                         return true;
                     case R.id.group_item2:
                         Intent intent = new Intent(MainActivity.this,
@@ -163,10 +161,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         walkBtn.setText("Stop Walking");
                         startTime = SystemClock.uptimeMillis();
                         handlerTime.postDelayed(runnableTime, 0);
-                        numSteps = 0;
-                        kcal = 0;
-                        kilo = 0l;
-                        meters = 0;
                         sensorManager.registerListener(MainActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
                         break;
                     case "Stop Walking":
@@ -200,22 +194,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         @Override
         public void onReceive(Context context, Intent intent) {
             TextView nowPlayingTxt = (TextView) findViewById(R.id.now_playing_text);
-            String action = intent.getAction();
-            String cmd = intent.getStringExtra("command");
-            Log.d("mIntentReceiver.onReceive ", action + " / " + cmd);
             String artist = intent.getStringExtra("artist");
             String album = intent.getStringExtra("album");
             String track = intent.getStringExtra("track");
-            Log.d("Music", artist + ":" + album + ":" + track);
-            nowPlayingTxt.setText(track + ": " + album + ": " + artist);
-
+            if (artist != null && album != null && track != null)
+                nowPlayingTxt.setText(track + ": " + album + ": " + artist);
         }
     };
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -246,10 +231,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void calKcal() {
-        //     (mBodyWeight * (mIsRunning ? METRIC_RUNNING_FACTOR : METRIC_WALKING_FACTOR))
-//            // Distance:
-//            * mStepLength // centimeters
-//                / 100000.0; // centimeters/kilometera
         kcal = ((AVERAGE_WEIGHT * METRIC_WALKING_FACTOR) * STEP_LENGTH / 100000.0) * numSteps;
         kcal_value.setText(String.format("%.3f", kcal));
     }

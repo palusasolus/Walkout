@@ -15,10 +15,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/ic_launcher_background"
             android:gravity="center"
             android:orientation="vertical">
 
             <RelativeLayout
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true">
@@ -27,12 +29,13 @@
                     android:id="@+id/progressBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
+                    android:animationResolution="3000"
                     android:indeterminate="false"
+                    android:indeterminateTint="@color/colorPrimary"
                     android:minHeight="@dimen/activity1_minHeight"
                     android:minWidth="@dimen/activity1_minWidth"
-                    android:indeterminateTint="@color/colorPrimary"
-                    android:animationResolution="3000"
                     android:thickness="2sp"
                     android:visibility="invisible" />
 
@@ -54,56 +57,104 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/stepCounted"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/activity1_padding"
-                        android:text="@string/stepCounted" />
-
-                    <TextView
-                        android:id="@+id/stepCounted_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/stepCounted"
+                            style="@style/frontStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:padding="@dimen/activity1_padding"
+                            android:text="@string/stepCounted" />
+
+                        <TextView
                             android:id="@+id/distance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            style="@style/frontStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
                             android:padding="@dimen/activity1_padding"
                             android:text="@string/distance" />
 
                         <TextView
-                            android:id="@+id/distance_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:id="@+id/kcal"
+                            style="@style/frontStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:padding="@dimen/activity1_padding"
+                            android:text="@string/kcal" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal">
+                            android:layout_margin="@dimen/activity1_margin"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/kcal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="@dimen/activity1_padding"
-                                android:text="@string/kcal" />
+                                android:id="@+id/stepCounted_value"
+                                style="@style/frontStyleCal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="@string/intiStep" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/activity1_margin"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/distance_value"
+                                style="@style/frontStyleCal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="@string/initDistance" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/activity1_margin"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/kcal_value"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                style="@style/frontStyleCal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="@string/initCal" />
                         </LinearLayout>
                     </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -144,21 +195,20 @@
                             android:id="@+id/previousBtn"
                             style="@style/PrimaryFlatButton"
                             android:theme="@style/now_playing"
-                            app:srcCompat="@drawable/previous_icon"
-                            />
+                            app:srcCompat="@drawable/previous_icon" />
 
                         <ImageButton
                             android:id="@+id/playBtn"
                             style="@style/now_playing"
-                            android:theme="@style/PrimaryButton"
                             android:background="@drawable/button_bg_round"
-                            app:srcCompat="@drawable/play_icon"/>
+                            android:theme="@style/PrimaryButton"
+                            app:srcCompat="@drawable/play_icon" />
 
                         <ImageButton
                             android:id="@+id/nextBtn"
                             style="@style/PrimaryFlatButton"
                             android:theme="@style/now_playing"
-                            app:srcCompat="@drawable/next_icon"/>
+                            app:srcCompat="@drawable/next_icon" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -170,10 +220,9 @@
                         <Button
                             android:id="@+id/WalkBtn"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="60sp"
                             android:text="@string/walkBtn"
-                            android:theme="@style/PrimaryButton"
-                            />
+                            android:theme="@style/PrimaryButton" />
                     </LinearLayout>
 
                 </LinearLayout>
