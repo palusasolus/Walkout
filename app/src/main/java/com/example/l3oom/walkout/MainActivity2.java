@@ -16,22 +16,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity2 extends AppCompatActivity {
 
-    SQLiteDatabase mDb;
     MyDbHelper mHelper;
     Cursor mCursor;
+    SQLiteDatabase mDb;
 
     public double steps = 0;
     public double distance = 0;
     public double cal = 0;
-    public double min = 0;
-    public double sec = 0;
+    public ArrayList<Integer> id = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +60,11 @@ public class MainActivity2 extends AppCompatActivity {
         });
         bottomNavigationView.setSelectedItemId(R.id.group_item2);
 
-        ListView listView = (ListView) findViewById(R.id.listview);
+        final ListView listView = (ListView) findViewById(R.id.listview);
 
         mHelper = new MyDbHelper(this);
         mDb = mHelper.getWritableDatabase();
-        mCursor = mDb.rawQuery("SELECT " + MyDbHelper.COL_STEP_COUNT + ", " + MyDbHelper.COL_DISTANCE
+        mCursor = mDb.rawQuery("SELECT " + MyDbHelper.COL_ID + "," + MyDbHelper.COL_STEP_COUNT + ", " + MyDbHelper.COL_DISTANCE
                 + ", " + MyDbHelper.COL_CALORIES + ", " + MyDbHelper.COL_TIME + " FROM " + MyDbHelper.TABLE_NAME, null);
 
         final ArrayList<String> dirArray = new ArrayList<String>();
@@ -78,14 +74,7 @@ public class MainActivity2 extends AppCompatActivity {
             steps += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)));
             distance += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)));
             cal += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)));
-            SimpleDateFormat format = new SimpleDateFormat("mm:ss:SSS");
-            try {
-                Date date = format.parse(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_TIME)));
-                min += date.getMinutes();
-                sec += date.getSeconds();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            id.add(Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_ID))));
             dirArray.add("step : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)) + "\t\t"
                     + "distance : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)) + " km\t\t\n"
                     + "calories : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)) + "\t\t\n"
@@ -93,17 +82,17 @@ public class MainActivity2 extends AppCompatActivity {
             mCursor.moveToNext();
         }
 
-        ArrayAdapter<String> adapterDir = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dirArray);
+        final ArrayAdapter<String> adapterDir = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dirArray);
         listView.setAdapter(adapterDir);
 
-        TextView textView = (TextView) findViewById(R.id.total);
+        final TextView textView = (TextView) findViewById(R.id.total);
         textView.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_info_details, 0, 0, 0);
-        textView.setText("\t Total Steps : " + steps + " \n\t Total Distance : " + String.format("%.3f",distance) + " km\n\t Total calories : " + String.format("%.3f",cal)+" KCal");
+        textView.setText("\t Total Steps : " + steps + " \n\t Total Distance : " + String.format("%.3f", distance) + " km\n\t Total calories : " + String.format("%.3f", cal) + " KCal");
 
         final AlertDialog.Builder viewDetail = new AlertDialog.Builder(this);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> myAdapter, View myView,
-                                    int position, long mylng) {
+            public void onItemClick(final AdapterView<?> myAdapter, View myView,
+                                    final int position, long mylng) {
                 String information = dirArray.get(position);
                 viewDetail.setIcon(android.R.drawable.btn_star_big_on);
                 viewDetail.setTitle("รายละเอียด");
@@ -115,9 +104,40 @@ public class MainActivity2 extends AppCompatActivity {
                                 dialog.dismiss();
                             }
                         });
+                viewDetail.setNegativeButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                mDb.delete(MyDbHelper.TABLE_NAME, MyDbHelper.COL_ID + " = " + id.get(position), null);
+                                resetData();
+                                mCursor = mDb.rawQuery("SELECT " + MyDbHelper.COL_ID + "," + MyDbHelper.COL_STEP_COUNT + ", " + MyDbHelper.COL_DISTANCE
+                                        + ", " + MyDbHelper.COL_CALORIES + ", " + MyDbHelper.COL_TIME + " FROM " + MyDbHelper.TABLE_NAME, null);
+
+                                mCursor.moveToFirst();
+
+                                while (!mCursor.isAfterLast()) {
+                                    steps += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)));
+                                    distance += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)));
+                                    cal += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)));
+                                    mCursor.moveToNext();
+                                }
+                                TextView textView = (TextView) findViewById(R.id.total);
+                                textView.setText("\t Total Steps : " + steps + " \n\t Total Distance : " + String.format("%.3f", distance) + " km\n\t Total calories : " + String.format("%.3f", cal) + " KCal");
+                                textView.invalidate();
+                                dirArray.remove(position);
+                                adapterDir.notifyDataSetChanged();
+
+                            }
+                        });
                 viewDetail.show();
             }
         });
+    }
+
+    public void resetData() {
+        steps = 0;
+        distance = 0;
+        cal = 0;
     }
 
     public void onPause() {

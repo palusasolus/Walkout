@@ -6,4 +6,8 @@
     <dimen name="activity1_textsize_20">20sp</dimen>
     <dimen name="activity1_minHeight">186sp</dimen>
     <dimen name="activity1_minWidth">186sp</dimen>
+    <dimen name="thickness">2sp</dimen>
+    <dimen name="animationResolution">3000</dimen>
+    <dimen name="weight">1</dimen>
+    <dimen name="button_height">60sp</dimen>
 </resources>

@@ -31,12 +31,12 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:animationResolution="3000"
+                    android:animationResolution="@dimen/animationResolution"
                     android:indeterminate="false"
                     android:indeterminateTint="@color/colorPrimary"
                     android:minHeight="@dimen/activity1_minHeight"
                     android:minWidth="@dimen/activity1_minWidth"
-                    android:thickness="2sp"
+                    android:thickness="@dimen/thickness"
                     android:visibility="invisible" />
 
                 <TextView
@@ -70,7 +70,7 @@
                             style="@style/frontStyle"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="@dimen/weight"
                             android:gravity="center"
                             android:padding="@dimen/activity1_padding"
                             android:text="@string/stepCounted" />
@@ -80,7 +80,7 @@
                             style="@style/frontStyle"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="@dimen/weight"
                             android:gravity="center"
                             android:padding="@dimen/activity1_padding"
                             android:text="@string/distance" />
@@ -90,7 +90,7 @@
                             style="@style/frontStyle"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="@dimen/weight"
                             android:gravity="center"
                             android:padding="@dimen/activity1_padding"
                             android:text="@string/kcal" />
@@ -106,7 +106,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="@dimen/activity1_margin"
-                            android:layout_weight="1"
+                            android:layout_weight="@dimen/weight"
                             android:orientation="vertical">
 
                             <TextView
@@ -114,7 +114,7 @@
                                 style="@style/frontStyleCal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
+                                android:layout_weight="@dimen/weight"
                                 android:gravity="center"
                                 android:text="@string/intiStep" />
 
@@ -124,7 +124,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="@dimen/activity1_margin"
-                            android:layout_weight="1"
+                            android:layout_weight="@dimen/weight"
                             android:orientation="vertical">
 
                             <TextView
@@ -132,7 +132,7 @@
                                 style="@style/frontStyleCal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
+                                android:layout_weight="@dimen/weight"
                                 android:gravity="center"
                                 android:text="@string/initDistance" />
                         </LinearLayout>
@@ -141,7 +141,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="@dimen/activity1_margin"
-                            android:layout_weight="1"
+                            android:layout_weight="@dimen/weight"
                             android:orientation="vertical">
 
                             <TextView
@@ -149,7 +149,7 @@
                                 style="@style/frontStyleCal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
+                                android:layout_weight="@dimen/weight"
                                 android:gravity="center"
                                 android:text="@string/initCal" />
                         </LinearLayout>
@@ -181,7 +181,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="Now playing.."
-                        android:textColor="#0336FF"
+                        android:textColor="@color/color_now_playing"
                         android:textSize="@dimen/activity1_textsize_16"
                         android:textStyle="italic" />
 
@@ -220,7 +220,7 @@
                         <Button
                             android:id="@+id/WalkBtn"
                             android:layout_width="match_parent"
-                            android:layout_height="60sp"
+                            android:layout_height="@dimen/button_height"
                             android:text="@string/walkBtn"
                             android:theme="@style/PrimaryButton" />
                     </LinearLayout>

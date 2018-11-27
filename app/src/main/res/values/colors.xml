@@ -7,4 +7,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="bgBottomNavigation">#fe485a</color>
     <color name="bottom_nav_item_color">#000000</color>
+    <color name="color_now_playing">#0336FF</color>
 </resources>
