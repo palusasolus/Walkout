@@ -68,6 +68,7 @@ public class MainActivity2 extends AppCompatActivity {
                 + ", " + MyDbHelper.COL_CALORIES + ", " + MyDbHelper.COL_TIME + " FROM " + MyDbHelper.TABLE_NAME, null);
 
         final ArrayList<String> dirArray = new ArrayList<String>();
+        final ArrayList<String> dialogshow = new ArrayList<String>();
         mCursor.moveToFirst();
 
         while (!mCursor.isAfterLast()) {
@@ -75,9 +76,11 @@ public class MainActivity2 extends AppCompatActivity {
             distance += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)));
             cal += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)));
             id.add(Integer.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_ID))));
-            dirArray.add("step : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)) + "\t\t"
-                    + "distance : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)) + " km\t\t\n"
-                    + "calories : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)) + "\t\t\n"
+            dirArray.add("step : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)) + "\n"
+                    + "time : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_TIME)));
+            dialogshow.add("step : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_STEP_COUNT)) + "\n"
+                    + "distance : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_DISTANCE)) + " km\n"
+                    + "calories : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)) + "\n"
                     + "time : " + mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_TIME)));
             mCursor.moveToNext();
         }
@@ -86,14 +89,17 @@ public class MainActivity2 extends AppCompatActivity {
         listView.setAdapter(adapterDir);
 
         final TextView textView = (TextView) findViewById(R.id.total);
-        textView.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_menu_info_details, 0, 0, 0);
-        textView.setText("\t Total Steps : " + steps + " \n\t Total Distance : " + String.format("%.3f", distance) + " km\n\t Total calories : " + String.format("%.3f", cal) + " KCal");
+        final TextView history = (TextView) findViewById(R.id.history);
+        textView.setText("Total");
+        history.setText("History");
+        final TextView listTotal = (TextView) findViewById(R.id.listTotal);
+        listTotal.setText("\t Steps : " + steps + " \n\t Distance : " + String.format("%.3f", distance) + " km\n\t calories : " + String.format("%.3f", cal) + " KCal");
 
         final AlertDialog.Builder viewDetail = new AlertDialog.Builder(this);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(final AdapterView<?> myAdapter, View myView,
                                     final int position, long mylng) {
-                String information = dirArray.get(position);
+                String information = dialogshow.get(position);
                 viewDetail.setIcon(android.R.drawable.btn_star_big_on);
                 viewDetail.setTitle("รายละเอียด");
                 viewDetail.setMessage(information);
@@ -121,9 +127,10 @@ public class MainActivity2 extends AppCompatActivity {
                                     cal += Double.valueOf(mCursor.getString(mCursor.getColumnIndex(MyDbHelper.COL_CALORIES)));
                                     mCursor.moveToNext();
                                 }
-                                TextView textView = (TextView) findViewById(R.id.total);
-                                textView.setText("\t Total Steps : " + steps + " \n\t Total Distance : " + String.format("%.3f", distance) + " km\n\t Total calories : " + String.format("%.3f", cal) + " KCal");
+                                TextView textView = (TextView) findViewById(R.id.listTotal);
+                                textView.setText("\t Steps : " + steps + " \n\t Distance : " + String.format("%.3f", distance) + " km\n\t calories : " + String.format("%.3f", cal) + " KCal");
                                 textView.invalidate();
+                                dialogshow.remove(position);
                                 dirArray.remove(position);
                                 adapterDir.notifyDataSetChanged();
 
