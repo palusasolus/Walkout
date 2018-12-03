@@ -37,14 +37,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="10sp">
+            android:padding="@dimen/padding_divider">
 
             <ListView
                 android:id="@+id/listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
-                android:dividerHeight="10.0sp" />
+                android:dividerHeight="@dimen/padding_divider" />
         </LinearLayout>
 
     </LinearLayout>
